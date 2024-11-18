@@ -29,7 +29,7 @@ const hashPassword = (password) => {
 const comparePassword = (password, hashedPassword) => {
     return bcrypt.compareSync(password, hashedPassword);
 };
-console.log('sdsa')
+
 module.exports = {
     generateAccessToken,
     generateRefreshToken,
