@@ -12,10 +12,14 @@ const authRouter = require('express').Router();
 const User = user
 
 authRouter.post('/register', async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, roleType } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    if (!roleType) {
+        return res.status(400).json({ message: 'No role type passed' });
     }
 
     const existingUser = await User.findOne({ where: { email } });
@@ -30,10 +34,12 @@ authRouter.post('/register', async (req, res) => {
     try {
         const user = await User.create({
             email,
-            password: hashedPassword,
             refreshToken,
+            roleType,
+            password: hashedPassword,
             isActivated: false,
-            userId: uuidv4()
+            userId: uuidv4(),
+            isAdmin: false
         });
 
         res.status(201).json({

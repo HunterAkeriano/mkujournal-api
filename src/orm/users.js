@@ -13,7 +13,7 @@ module.exports = (sequelize) => {
             allowNull: false,
         },
         password: {
-            type: Sequelize.STRING(43),
+            type: Sequelize.STRING(255),
             allowNull: false,
         },
         refreshToken: {
@@ -27,6 +27,16 @@ module.exports = (sequelize) => {
         },
         userId: {
             type: Sequelize.STRING(100),
+            unique: true,
+            allowNull: false,
+        },
+        roleType: {
+            type: Sequelize.STRING(5),
+            unique: true,
+            allowNull: false,
+        },
+        isAdmin: {
+            type: Sequelize.BOOLEAN,
             unique: true,
             allowNull: false,
         },
