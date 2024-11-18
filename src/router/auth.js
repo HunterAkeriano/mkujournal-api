@@ -20,7 +20,7 @@ authRouter.post('/register', async (req, res) => {
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-        return res.status(400).json({ message: 'User already exists', field: 'email' });
+        return res.status(400).json({ message: 'Користувач вже зареєстрований', field: 'email' });
     }
 
     const hashedPassword = await hashPassword(password);
@@ -37,12 +37,12 @@ authRouter.post('/register', async (req, res) => {
         });
 
         res.status(201).json({
-            message: 'User registered successfully',
+            message: 'Реєстрація успішна',
             user: { email: user.email, userId: user.userId, refreshToken: user.refreshToken }
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error registering user', error });
+        res.status(500).json({ message: 'Реєстрація не успішна', error });
     }
 });
 
@@ -50,17 +50,17 @@ authRouter.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     if(!email || !password) {
-        return res.status(404).json({ message: 'Email or password not found' });
+        return res.status(404).json({ message: "Логін та пароль обов'язковий" });
     }
 
     const user = await User.findOne({ where: { email } });
     if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ message: 'Користувач не знайдений' });
     }
 
     const isPasswordValid = await comparePassword(password, user.password);
     if (!isPasswordValid) {
-        return res.status(401).json({ message: 'Invalid password' });
+        return res.status(401).json({ message: 'Не правильний пароль' });
     }
 
     const accessToken = generateAccessToken(user.userId);
