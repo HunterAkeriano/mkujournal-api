@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const JWT_SECRET = 'your-secret-key'; // используйте более сложный и надежный секрет
-const JWT_REFRESH_SECRET = 'mamy-ebal'; // секрет для refresh токена
-const JWT_ACCESS_EXPIRATION = '15m'; // время жизни access токена
-const JWT_REFRESH_EXPIRATION = '7d'; // время жизни refresh токена
+const JWT_SECRET = 'your-secret-key'; //todo: env
+const JWT_REFRESH_SECRET = 'mamy-ebal';  //todo: env
+const JWT_ACCESS_EXPIRATION = '15m';  //todo: env
+const JWT_REFRESH_EXPIRATION = '7d'; //todo: env
 
 const generateAccessToken = (userId) => {
     return jwt.sign({ userId }, JWT_SECRET, { expiresIn: JWT_ACCESS_EXPIRATION });

@@ -1,0 +1,39 @@
+const jwt = require('jsonwebtoken');
+const db = require("../orm");
+const User = db.user
+
+const authorize = async (req, res, next) => {
+    const { authorization } = req.headers;
+
+    if (!authorization) {
+        return res.status(401).json({ message: 'Access token required' });
+    }
+
+    try {
+        const decoded = jwt.verify(authorization, 'your-secret-key'); //todo: fix or env
+
+        const user = await User.findOne({
+            where: { userId: decoded.userId }
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        req.user = user;
+
+        next();
+    } catch (error) {
+        if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({ message: 'Invalid access token' });
+        }
+
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ message: 'Access token expired' });
+        }
+
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+module.exports = authorize;
