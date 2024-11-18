@@ -22,10 +22,12 @@ app.get('/profile', async (req, res) => {
 
     try {
         const decoded = verifyAccessToken(authorization);
-        const user = await User.findByPk(decoded.userId);
+        const user = await User.findOne({
+            where: { userId: decoded.userId }
+        });
 
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: 'User not found', decoded: decoded });
         }
 
         res.json({ email: user.email, userId: user.id });

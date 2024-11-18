@@ -85,7 +85,10 @@ authRouter.post('/refresh-token', async (req, res) => {
     try {
         const decoded = verifyRefreshToken(refreshToken);
 
-        const user = await User.findByPk(decoded.userId);
+        const user = await User.findOne({
+            where: { userId: decoded.userId }
+        });
+
         if (!user || user.refreshToken !== refreshToken) {
             return res.status(403).json({ message: 'Invalid refresh token' });
         }
