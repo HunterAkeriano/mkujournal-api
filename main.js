@@ -13,7 +13,7 @@ app.get('/profile', authorize, async (req, res) => {
 
     res.json({
         email: user.email,
-        userId: user.id
+        userId: user.userId
     });
 });
 
