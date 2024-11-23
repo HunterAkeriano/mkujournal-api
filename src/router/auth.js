@@ -77,12 +77,12 @@ authRouter.post('/login', async (req, res) => {
 
     const user = await User.findOne({ where: { email } });
     if (!user) {
-        return res.status(404).json({ message: 'Користувач не знайдений' });
+        return res.status(404).json({ message: 'Користувач не знайдений', field: 'email' });
     }
 
     const isPasswordValid = await comparePassword(password, user.password);
     if (!isPasswordValid) {
-        return res.status(401).json({ message: 'Не правильний пароль' });
+        return res.status(401).json({ message: 'Не правильний пароль', field: 'password' });
     }
 
     const accessToken = generateAccessToken(user.userId);

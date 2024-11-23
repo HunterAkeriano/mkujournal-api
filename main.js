@@ -1,12 +1,14 @@
 const express = require('express');
 const {authRouter} = require("./src/router/auth");
-const authorize = require("./src/middleware/check-authorize");
+const {profileRouter} = require("./src/router/profile");
 
 require('dotenv').config();
 const cors = require('cors');
 
+
 const allowedOrigins = [
     'http://localhost:5173',
+    'https://mku-journal.com.ua',
     'https://mku-journal.com.ua/',
     'PostmanRuntime/7.42.0'
 ];
@@ -32,15 +34,7 @@ const HOST = process.env.HOST;
 app.use(cors(corsOptions));
 app.use('/auth', authRouter)
 
-app.get('/profile', authorize, async (req, res) => {
-    const user = req.user;
-
-    res.json({
-        email: user.email,
-        userId: user.userId
-    });
-});
-
+app.use(profileRouter)
 
 app.listen(PORT,  HOST, () => {
     console.log('started', HOST + ':' + PORT);
