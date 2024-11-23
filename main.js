@@ -29,7 +29,7 @@ app.use(express.json());
 const PORT = process.env.PORT;
 const HOST = process.env.HOST;
 
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 app.use('/auth', authRouter)
 
 app.get('/profile', authorize, async (req, res) => {
@@ -42,6 +42,6 @@ app.get('/profile', authorize, async (req, res) => {
 });
 
 
-app.listen(8000,  'localhost', () => {
+app.listen(PORT,  HOST, () => {
     console.log('started', HOST + ':' + PORT);
 });
