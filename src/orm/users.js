@@ -2,11 +2,6 @@ const Sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
     return sequelize.define('users', {
-        id: {
-            type: Sequelize.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-        },
         email: {
             type: Sequelize.STRING(100),
             unique: true,
@@ -28,6 +23,7 @@ module.exports = (sequelize) => {
         userId: {
             type: Sequelize.STRING(100),
             unique: true,
+            primaryKey: true,
             allowNull: false,
         },
         roleType: {

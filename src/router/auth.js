@@ -5,14 +5,15 @@ const {
     generateAccessToken,
     verifyRefreshToken
 } = require("../utils/token");
-const {user} = require("../orm");
+const {user, profile} = require("../orm");
 const { v4: uuidv4 } = require('uuid');
 
 const authRouter = require('express').Router();
 const User = user
+const Profile = profile
 
 authRouter.post('/register', async (req, res) => {
-    const { email, password, roleType } = req.body;
+    const {name, surName, dateCreated, email, password, phone, facultet, roleType } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({ message: 'Email and password are required' });
@@ -23,6 +24,7 @@ authRouter.post('/register', async (req, res) => {
     }
 
     const existingUser = await User.findOne({ where: { email } });
+
     if (existingUser) {
         return res.status(400).json({ message: 'Користувач вже зареєстрований', field: 'email' });
     }
@@ -32,14 +34,28 @@ authRouter.post('/register', async (req, res) => {
     const refreshToken = generateRefreshToken();
 
     try {
+        const userId = uuidv4();
+
         const user = await User.create({
             email,
             refreshToken,
             roleType,
             password: hashedPassword,
             isActivated: false,
-            userId: uuidv4(),
-            isAdmin: false
+            userId: userId,
+            isAdmin: false,
+        });
+
+        await Profile.create({
+            email,
+            name,
+            surName,
+           dateCreated: new Date(dateCreated),
+            phone,
+            facultetId: facultet,
+            userId: userId,
+            roleType,
+            userPhoto: '',
         });
 
         res.status(201).json({
@@ -56,7 +72,7 @@ authRouter.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     if(!email || !password) {
-        return res.status(404).json({ message: "Логін та пароль обов'язковий" });
+        return res.status(404).json({ message: "Логін та пароль обов'язковий", fields: ['email', 'password'] });
     }
 
     const user = await User.findOne({ where: { email } });

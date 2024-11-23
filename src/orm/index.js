@@ -10,8 +10,10 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
 });
 
 const User = require('./users')(sequelize);
+const Profile = require('./profile')(sequelize);
 
 module.exports = {
     sequelize,
     user: User,
+    profile: Profile,
 }
