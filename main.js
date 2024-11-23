@@ -2,7 +2,7 @@ const express = require('express');
 const {authRouter} = require("./src/router/auth");
 const authorize = require("./src/middleware/check-authorize");
 
-
+require('dotenv').config();
 const app = express();
 app.use(express.json());
 
@@ -19,5 +19,5 @@ app.get('/profile', authorize, async (req, res) => {
 
 
 app.listen(8001,  '127.0.0.1', () => {
-    console.log('Server running on port 8001');
+    console.log('Database Host:', process.env.DB_PASSWORD);
 });
