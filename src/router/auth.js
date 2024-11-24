@@ -7,6 +7,8 @@ const {
 } = require("../utils/token");
 const {user, profile} = require("../orm");
 const { v4: uuidv4 } = require('uuid');
+const {transporter} = require("../utils/mailer");
+const {resendPassword, sendRegister} = require("../utils/mail");
 
 const authRouter = require('express').Router();
 const User = user
@@ -67,6 +69,13 @@ authRouter.post('/register', async (req, res) => {
             roleType,
             userPhoto: '',
         });
+
+        transporter.sendMail({
+            from: 'mkujounal@gmail.com',
+            to: email,
+            subject: 'MКУ-ЖУНАЛ: Ваш аккаунт успішно зареєстрований',
+            html: sendRegister()
+        })
 
         res.status(201).json({
             message: 'Реєстрація успішна',
@@ -159,6 +168,13 @@ authRouter.post('/reset-password', async (req, res) => {
         const hashedPassword = await hashPassword(newPassword);
 
         existingUser.password = hashedPassword;
+
+        transporter.sendMail({
+            from: 'mkujounal@gmail.com',
+            to: email,
+            subject: 'MКУ-ЖУНАЛ: Ваш новий пароль для входу',
+            html: resendPassword(newPassword)
+        })
 
         res.status(200).json({ message: 'Новий пароль відправлений на пошту' });
     } catch (error) {
