@@ -5,12 +5,14 @@ const Facultet = facultet
 
 facultetRouter.get('/select', async (req, res) => {
    try {
-       const { search } = req.body;
+       const { search } = req.query;
 
        const result = await  Facultet.findAll()
 
        if(!search){
-           return res.json(result)
+           return res.json({
+               items: result,
+           })
        }
 
        if(search){

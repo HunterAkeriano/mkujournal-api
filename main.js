@@ -32,13 +32,13 @@ app.use(express.json());
 const PORT = process.env.PORT;
 const HOST = process.env.HOST;
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 app.use('/facultet', facultetRouter);
 app.use('/auth', authRouter)
 
 app.use(profileRouter)
 
-app.listen(PORT,  HOST, () => {
+app.listen(8000,  'localhost', () => {
     console.log('started', HOST + ':' + PORT);
 });
