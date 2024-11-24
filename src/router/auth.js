@@ -12,6 +12,16 @@ const authRouter = require('express').Router();
 const User = user
 const Profile = profile
 
+function generateRandomPassword(length = 8) {
+    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * chars.length);
+        password += chars[randomIndex];
+    }
+    return password;
+}
+
 authRouter.post('/register', async (req, res) => {
     const {name, surName, dateCreated, email, password, phone, facultet, roleType } = req.body;
 
@@ -77,7 +87,7 @@ authRouter.post('/login', async (req, res) => {
 
     const user = await User.findOne({ where: { email } });
     if (!user) {
-        return res.status(404).json({ message: 'Користувач не знайдений', field: 'email' });
+        return res.status(400).json({ message: 'Користувач не знайдений', field: 'email' });
     }
 
     const isPasswordValid = await comparePassword(password, user.password);
@@ -127,6 +137,33 @@ authRouter.post('/refresh-token', async (req, res) => {
         });
     } catch (error) {
         res.status(403).json({ message: 'Invalid refresh token', error });
+    }
+});
+
+authRouter.post('/reset-password', async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ message: 'Email is required' });
+    }
+
+    const existingUser = await User.findOne({ where: { email } });
+
+    if (!existingUser) {
+        return res.status(404).json({ message: 'Користувач не знайдений', field: 'email' });
+    }
+
+    try {
+        const newPassword = generateRandomPassword();
+
+        const hashedPassword = await hashPassword(newPassword);
+
+        existingUser.password = hashedPassword;
+
+        res.status(200).json({ message: 'Новий пароль відправлений на пошту' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Something went wrong', error });
     }
 });
 
