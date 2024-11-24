@@ -9,11 +9,15 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
     port: process.env.DB_PORT
 });
 
-const User = require('./users')(sequelize);
-const Profile = require('./profile')(sequelize);
+const User = require('./users/users')(sequelize);
+const Profile = require('./users/profile')(sequelize);
+
+
+const Facultet = require('./facultet/facultet')(sequelize);
 
 module.exports = {
     sequelize,
     user: User,
     profile: Profile,
+    facultet: Facultet
 }

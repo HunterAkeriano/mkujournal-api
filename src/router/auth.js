@@ -104,6 +104,10 @@ authRouter.post('/login', async (req, res) => {
         return res.status(400).json({ message: 'Не правильний пароль', field: 'password' });
     }
 
+    if(!user.isActivated) {
+        return res.status(400).json({ message: 'Ваш аккаунт не верифікований', field: 'email' });
+    }
+
     const accessToken = generateAccessToken(user.userId);
     const refreshToken = generateRefreshToken(user.userId);
 

@@ -4,6 +4,7 @@ const {profileRouter} = require("./src/router/profile");
 
 require('dotenv').config();
 const cors = require('cors');
+const {facultetRouter} = require("./src/router/facultet");
 
 
 const allowedOrigins = [
@@ -31,11 +32,13 @@ app.use(express.json());
 const PORT = process.env.PORT;
 const HOST = process.env.HOST;
 
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
+
+app.use('/facultet', facultetRouter);
 app.use('/auth', authRouter)
 
 app.use(profileRouter)
 
-app.listen(8000,  'localhost', () => {
+app.listen(PORT,  HOST, () => {
     console.log('started', HOST + ':' + PORT);
 });
