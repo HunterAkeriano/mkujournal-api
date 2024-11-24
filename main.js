@@ -18,6 +18,7 @@ const allowedOrigins = [
     'https://www.mku-journal.online/',
     'https://www.mku-journal.online',
     'https://www.mku-journal.online/api-docs/',
+    'https://www.mku-journal.com.ua',
     'PostmanRuntime/7.42.0'
 ];
 
