@@ -91,7 +91,7 @@ authRouter.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     if(!email || !password) {
-        return res.status(404).json({ message: "Логін та пароль обов'язковий", fields: ['email', 'password'] });
+        return res.status(400).json({ message: "Логін та пароль обов'язковий", fields: ['email', 'password'] });
     }
 
     const user = await User.findOne({ where: { email } });
@@ -101,7 +101,7 @@ authRouter.post('/login', async (req, res) => {
 
     const isPasswordValid = await comparePassword(password, user.password);
     if (!isPasswordValid) {
-        return res.status(401).json({ message: 'Не правильний пароль', field: 'password' });
+        return res.status(400).json({ message: 'Не правильний пароль', field: 'password' });
     }
 
     const accessToken = generateAccessToken(user.userId);
@@ -159,7 +159,7 @@ authRouter.post('/reset-password', async (req, res) => {
     const existingUser = await User.findOne({ where: { email } });
 
     if (!existingUser) {
-        return res.status(404).json({ message: 'Користувач не знайдений', field: 'email' });
+        return res.status(400).json({ message: 'Користувач не знайдений', field: 'email' });
     }
 
     try {
@@ -168,6 +168,8 @@ authRouter.post('/reset-password', async (req, res) => {
         const hashedPassword = await hashPassword(newPassword);
 
         existingUser.password = hashedPassword;
+
+        await existingUser.save();
 
         transporter.sendMail({
             from: 'mkujounal@gmail.com',
