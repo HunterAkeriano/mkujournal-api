@@ -56,7 +56,7 @@ facultetRouter.get('/main-block', async (req, res) => {
     }
 });
 
-facultetRouter.post('/update-survey', async (req, res) => {
+facultetRouter.put('/update-survey', async (req, res) => {
     try {
         const { numberId } = req.body;
 
