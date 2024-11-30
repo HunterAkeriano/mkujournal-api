@@ -50,24 +50,24 @@ authRouter.post('/register', async (req, res) => {
 
         const user = await User.create({
             email,
-            refreshToken,
-            roleType,
+            refresh_token: refreshToken,
+            role_type: roleType,
             password: hashedPassword,
-            isActivated: false,
-            userId: userId,
-            isAdmin: false,
+            is_activated: false,
+            user_id: userId,
+            is_admin: false,
         });
 
         await Profile.create({
             email,
             name,
-            surName,
-           dateCreated: new Date(dateCreated),
+            sur_name: surName,
+            date_created: new Date(dateCreated),
             phone,
-            facultetId: facultet,
-            userId: userId,
-            roleType,
-            userPhoto: '',
+            facultet_id: facultet,
+            user_id: userId,
+            role_type: roleType,
+            user_photo: '',
         });
 
         transporter.sendMail({

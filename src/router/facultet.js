@@ -26,7 +26,7 @@ facultetRouter.get('/select', async (req, res) => {
             })
         }
     }catch(err) {
-        res.status(400).send({error: err.message});
+        res.status(400).send({error: err});
     }
 
 })

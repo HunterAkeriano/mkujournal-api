@@ -10,11 +10,11 @@ module.exports = (sequelize) => {
             type: Sequelize.STRING(100),
             allowNull: false,
         },
-        surName: {
+        sur_name: {
             type: Sequelize.STRING(100),
             allowNull: false,
         },
-        dateCreated: {
+        date_created: {
             type: Sequelize.DATE,
             allowNull: false,
         },
@@ -22,22 +22,22 @@ module.exports = (sequelize) => {
             type: Sequelize.STRING(19),
             allowNull: false,
         },
-        facultetId: {
+        facultet_id: {
             type: Sequelize.INTEGER,
             allowNull: false,
         },
-        userId: {
+        user_id: {
             type: Sequelize.STRING(100),
             unique: true,
             primaryKey: true,
             allowNull: false,
         },
-        roleType: {
+        role_type: {
             type: Sequelize.STRING(5),
             unique: true,
             allowNull: false,
         },
-        userPhoto: {
+        user_photo: {
             type: Sequelize.STRING(255),
             allowNull: false,
         },

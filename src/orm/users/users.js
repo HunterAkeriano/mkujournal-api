@@ -11,27 +11,27 @@ module.exports = (sequelize) => {
             type: Sequelize.STRING(255),
             allowNull: false,
         },
-        refreshToken: {
+        refresh_token: {
             type: Sequelize.STRING(255),
             defaultValue: null,
             allowNull: true,
         },
-        isActivated: {
+        is_activated: {
             type: Sequelize.BOOLEAN,
             defaultValue: false,
         },
-        userId: {
+        user_id: {
             type: Sequelize.STRING(100),
             unique: true,
             primaryKey: true,
             allowNull: false,
         },
-        roleType: {
+        role_type: {
             type: Sequelize.STRING(5),
             unique: true,
             allowNull: false,
         },
-        isAdmin: {
+        is_admin: {
             type: Sequelize.BOOLEAN,
             unique: true,
             allowNull: false,
