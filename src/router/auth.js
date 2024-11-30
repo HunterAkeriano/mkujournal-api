@@ -25,7 +25,7 @@ function generateRandomPassword(length = 8) {
 }
 
 authRouter.post('/register', async (req, res) => {
-    const {name, surName, dateCreated, email, password, phone, facultet, roleType } = req.body;
+    const {name, surName, dateCreated, email, password, phone, facultet, roleType, photoUrl, gender } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({ message: 'Email and password are required' });
@@ -67,7 +67,8 @@ authRouter.post('/register', async (req, res) => {
             facultet_id: facultet,
             user_id: userId,
             role_type: roleType,
-            user_photo: '',
+            user_photo: photoUrl,
+            gender: gender || 'man'
         });
 
         transporter.sendMail({

@@ -14,6 +14,8 @@ const allowedOrigins = [
     'http://127.1.3.228:3000/',
     'http://localhost:5173',
     'https://mku-journal.com.ua',
+    'http://mku-journal.com.ua',
+    'http://mku-journal.com.ua/',
     'https://mku-journal.com.ua/',
     'https://www.mku-journal.online/',
     'https://www.mku-journal.online',
@@ -21,7 +23,6 @@ const allowedOrigins = [
     'https://www.mku-journal.com.ua',
     'PostmanRuntime/7.42.0'
 ];
-
 const corsOptions = {
     origin: function (origin, callback) {
         if(origin === undefined) {

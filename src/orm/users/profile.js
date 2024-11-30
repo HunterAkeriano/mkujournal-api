@@ -41,6 +41,10 @@ module.exports = (sequelize) => {
             type: Sequelize.STRING(255),
             allowNull: false,
         },
+        gender: {
+            type: Sequelize.STRING(),
+            allowNull: false,
+        }
     }, {
         timestamps: false,
         tableName: 'profile',
