@@ -79,7 +79,7 @@ authRouter.post('/register', async (req, res) => {
 
         res.status(201).json({
             message: 'Реєстрація успішна',
-            user: { email: user.email, userId: user.userId, refreshToken: user.refreshToken }
+            user: { email: user.email, userId: user.user_id, refreshToken: user.refresh_token }
         });
     } catch (error) {
         console.error(error);
@@ -104,12 +104,12 @@ authRouter.post('/login', async (req, res) => {
         return res.status(400).json({ message: 'Не правильний пароль', field: 'password' });
     }
 
-    if(!user.isActivated) {
+    if(!user.is_activated) {
         return res.status(400).json({ message: 'Ваш аккаунт не верифікований', field: 'email' });
     }
 
-    const accessToken = generateAccessToken(user.userId);
-    const refreshToken = generateRefreshToken(user.userId);
+    const accessToken = generateAccessToken(user.user_id);
+    const refreshToken = generateRefreshToken(user.user_id);
 
     user.refreshToken = refreshToken;
     await user.save();
@@ -131,17 +131,17 @@ authRouter.post('/refresh-token', async (req, res) => {
         const decoded = verifyRefreshToken(refreshToken);
 
         const user = await User.findOne({
-            where: { userId: decoded.userId }
+            where: { user_id: decoded.user_id }
         });
 
-        if (!user || user.refreshToken !== refreshToken) {
+        if (!user || user.refresh_token !== refreshToken) {
             return res.status(403).json({ message: 'Invalid refresh token' });
         }
 
-        const newAccessToken = generateAccessToken(user.userId);
-        const newRefreshToken = generateRefreshToken(user.userId);
+        const newAccessToken = generateAccessToken(user.user_id);
+        const newRefreshToken = generateRefreshToken(user.user_id);
 
-        user.refreshToken = newRefreshToken;
+        user.refresh_token = newRefreshToken;
         await user.save();
 
         res.json({
