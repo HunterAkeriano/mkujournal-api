@@ -13,7 +13,7 @@ const authorize = async (req, res, next) => {
         const decoded = jwt.verify(authorization, 'your-secret-key'); //todo: fix or env
 
         const user = await User.findOne({
-            where: { user_id: decoded.user_id }
+            where: { user_id: decoded.userId }
         });
 
         if (!user) {
