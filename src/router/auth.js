@@ -195,7 +195,6 @@ authRouter.get('/check-reset-token', async (req, res) => {
     }
 
     const existingUser = await User.findOne({ where: { reset_token: token } });
-    const existingProfile = await Profile.findOne({ where: { email: existingUser.email } });
 
 
     if (!existingUser) {
@@ -206,7 +205,7 @@ authRouter.get('/check-reset-token', async (req, res) => {
         return res.status(400).json({ message: 'Токен для відновлення пароля вийшов' });
     }
 
-    console.log(existingUser)
+    const existingProfile = await Profile.findOne({ where: { email: existingUser.email } });
 
     return res.status(200).json({
         full_name: existingProfile.name + ' ' + existingProfile.sur_name,
@@ -230,6 +229,9 @@ authRouter.post('/set-new-password', async (req, res) => {
     }
 
     if (existingUser.reset_token_expiration < new Date()) {
+        existingUser.reset_token = null;
+        existingUser.reset_token_expiration = null;
+        await existingUser.save();
         return res.status(400).json({ message: 'Токен для відновлення пароля вийшов' });
     }
 
