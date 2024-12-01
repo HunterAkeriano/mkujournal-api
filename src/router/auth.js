@@ -211,7 +211,8 @@ authRouter.get('/check-reset-token', async (req, res) => {
     return res.status(200).json({
         full_name: existingProfile.name + ' ' + existingProfile.sur_name,
         photo: existingProfile.user_photo,
-        role: existingUser.role_type
+        role: existingUser.role_type,
+        email: existingUser.email,
     })
 })
 
