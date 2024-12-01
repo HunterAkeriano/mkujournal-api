@@ -188,13 +188,15 @@ authRouter.post('/reset-password', async (req, res) => {
 });
 
 authRouter.get('/check-reset-token', async (req, res) => {
-    const { token } = req.headers;
+    const { token } = req.query;
 
     if(!token) {
         return res.status(400).json({ message: 'Токен не знайдено' });
     }
 
     const existingUser = await User.findOne({ where: { reset_token: token } });
+    const existingProfile = await Profile.findOne({ where: { email: existingUser.email } });
+
 
     if (!existingUser) {
         return res.status(400).json({ message: 'Токен для відновлення не знайдений', field: 'resetToken' });
@@ -204,7 +206,12 @@ authRouter.get('/check-reset-token', async (req, res) => {
         return res.status(400).json({ message: 'Токен для відновлення пароля вийшов' });
     }
 
-    return res.status(200).json(true)
+    console.log(existingUser)
+
+    return res.status(200).json({
+        full_name: existingProfile.name + ' ' + existingProfile.sur_name,
+        photo: existingProfile.user_photo,
+    })
 })
 
 authRouter.post('/set-new-password', async (req, res) => {
