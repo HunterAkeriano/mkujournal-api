@@ -64,8 +64,6 @@
  *         description: Внутренняя ошибка сервера
  */
 
-
-
 /**
  * @swagger
  * /auth/login:
@@ -105,7 +103,6 @@
  *         description: Аккаунт пользователя не активирован
  */
 
-
 /**
  * @swagger
  * /auth/refresh-token:
@@ -142,7 +139,6 @@
  *         description: Неверный refresh токен
  */
 
-
 /**
  * @swagger
  * /auth/reset-password:
@@ -168,4 +164,64 @@
  *         description: Письмо не найдено
  *       500:
  *         description: Ошибка сервера при сбросе пароля
+ */
+
+/**
+ * @swagger
+ * /auth/check-reset-token:
+ *   get:
+ *     summary: Проверка действительности токена для сброса пароля
+ *     description: Проверяет, действителен ли токен для сброса пароля
+ *     tags: [Auth]
+ *     parameters:
+ *       - name: token
+ *         in: header
+ *         required: true
+ *         description: Токен сброса пароля
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Токен действителен
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: boolean
+ *               example: true
+ *       400:
+ *         description: Токен не найден или недействителен
+ *       403:
+ *         description: Токен истек
+ */
+
+/**
+ * @swagger
+ * /auth/set-new-password:
+ *   post:
+ *     summary: Установка нового пароля
+ *     description: Устанавливает новый пароль для пользователя по токену сброса пароля
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               resetToken:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *             required:
+ *               - resetToken
+ *               - newPassword
+ *     responses:
+ *       200:
+ *         description: Новый пароль успешно установлен
+ *       400:
+ *         description: Токен или новый пароль не предоставлены
+ *       403:
+ *         description: Токен для сброса пароля недействителен или истек
+ *       500:
+ *         description: Ошибка сервера при установке пароля
  */

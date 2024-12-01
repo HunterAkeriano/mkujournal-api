@@ -13,15 +13,10 @@ const {resendPassword, sendRegister} = require("../utils/mail");
 const authRouter = require('express').Router();
 const User = user
 const Profile = profile
+const crypto = require('crypto');
 
-function generateRandomPassword(length = 8) {
-    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
-    let password = "";
-    for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * chars.length);
-        password += chars[randomIndex];
-    }
-    return password;
+function generatePasswordResetToken() {
+    return crypto.randomBytes(32).toString('hex');
 }
 
 authRouter.post('/register', async (req, res) => {
@@ -168,28 +163,81 @@ authRouter.post('/reset-password', async (req, res) => {
     }
 
     try {
-        const newPassword = generateRandomPassword();
+        const resetToken = generatePasswordResetToken();
+        const resetTokenExpiration = new Date();
+        resetTokenExpiration.setHours(resetTokenExpiration.getHours() + 1);
 
-        const hashedPassword = await hashPassword(newPassword);
-
-        existingUser.password = hashedPassword;
-
+        existingUser.reset_token = resetToken;
+        existingUser.reset_token_expiration = resetTokenExpiration;
         await existingUser.save();
+
+        const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
         transporter.sendMail({
             from: 'mkujounal@gmail.com',
             to: email,
-            subject: 'MКУ-ЖУНАЛ: Ваш новий пароль для входу',
-            html: resendPassword(newPassword)
-        })
+            subject: 'MКУ-ЖУНАЛ: Відновлення пароля',
+            html: resendPassword(resetLink)
+        });
 
-        res.status(200).json({ message: 'Новий пароль відправлений на пошту' });
+        res.status(200).json({ message: 'Посилання для відновлення пароля надіслано на пошту' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Something went wrong', error });
+        res.status(500).json({ message: 'Щось пішло не так', error });
     }
 });
 
+authRouter.get('/check-reset-token', async (req, res) => {
+    const { token } = req.headers;
+
+    if(!token) {
+        return res.status(400).json({ message: 'Токен не знайдено' });
+    }
+
+    const existingUser = await User.findOne({ where: { reset_token: token } });
+
+    if (!existingUser) {
+        return res.status(400).json({ message: 'Токен для відновлення не знайдений', field: 'resetToken' });
+    }
+
+    if (existingUser.reset_token_expiration < new Date()) {
+        return res.status(400).json({ message: 'Токен для відновлення пароля вийшов' });
+    }
+
+    return res.status(200).json(true)
+})
+
+authRouter.post('/set-new-password', async (req, res) => {
+    const { resetToken, newPassword } = req.body;
+
+    if (!resetToken || !newPassword) {
+        return res.status(400).json({ message: 'Token та новий пароль обов\'язкові' });
+    }
+
+    const existingUser = await User.findOne({ where: { reset_token: resetToken } });
+
+    if (!existingUser) {
+        return res.status(400).json({ message: 'Токен для відновлення не знайдений', field: 'resetToken' });
+    }
+
+    if (existingUser.reset_token_expiration < new Date()) {
+        return res.status(400).json({ message: 'Токен для відновлення пароля вийшов' });
+    }
+
+    try {
+        const hashedPassword = await hashPassword(newPassword);
+
+        existingUser.password = hashedPassword;
+        existingUser.reset_token = null;
+        existingUser.reset_token_expiration = null;
+        await existingUser.save();
+
+        res.status(200).json({ message: 'Пароль успішно оновлено' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Щось пішло не так', error });
+    }
+});
 
 module.exports = {
     authRouter

@@ -22,8 +22,9 @@ function resendPassword(password) {
         <table role="presentation" style="width: 100%; border-bottom: 1px solid black; border-left: 1px solid black; border-right: 1px solid black;  text-align: center; padding: 20px;">
             <tr>
                 <td>
-                    <p style="margin: 0; font-size: 18px; font-weight: 700;">Ваш пароль для відновлення:</p>
+                    <p style="margin: 0; font-size: 18px; font-weight: 700;">Ваше посилання для відновлення:</p>
                     <p style="font-weight: bold; margin-top: 10px;">${password}</p>
+                      <p style="font-weight: bold; margin-top: 10px;">Це були не ви? Проігноруєте повідомлення, з повагою - команда Розробників</p>
                     <p style="font-weight: bold; margin-top: 10px;">Посилання на сайт: <a href="https://mku-journal.com.ua/">https://mku-journal.com.ua/</a></p>
                 </td>
             </tr>

@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const {DataTypes} = require("sequelize");
 
 module.exports = (sequelize) => {
     return sequelize.define('users', {
@@ -12,6 +13,16 @@ module.exports = (sequelize) => {
             allowNull: false,
         },
         refresh_token: {
+            type: Sequelize.STRING(255),
+            defaultValue: null,
+            allowNull: true,
+        },
+        reset_token_expiration : {
+            type: DataTypes.DATE,
+            defaultValue: null,
+            allowNull: true,
+        },
+        reset_token : {
             type: Sequelize.STRING(255),
             defaultValue: null,
             allowNull: true,
