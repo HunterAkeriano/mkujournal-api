@@ -5,7 +5,7 @@ const {
     generateAccessToken,
     verifyRefreshToken
 } = require("../utils/token");
-const { validationRoleType, validationEmailFn } = require("../validation/auth/auth");
+const { validationRoleType, validationEmailFn, getFieldLength } = require("../validation/auth/auth");
 const {user, profile} = require("../orm");
 const { v4: uuidv4 } = require('uuid');
 const {transporter} = require("../utils/mailer");
@@ -28,11 +28,19 @@ authRouter.post('/register', async (req, res) => {
     }
 
     if(!validationEmailFn(email)) {
-        return res.status(400).json({ message: 'Вкажіть правильний email' });
+        return res.status(400).json({ message: 'Вкажіть правильний email', field: 'email' });
     }
 
     if (!role_type || !validationRoleType(role_type)) {
         return res.status(400).json({ message: 'No role type passed' });
+    }
+
+    if(!getFieldLength(first_name, 2)) {
+        return res.status(400).json({ message: 'First name required', field: 'first_name' });
+    }
+
+    if(!getFieldLength(last_name, 2)) {
+        return res.status(400).json({ message: 'Last name required', field: 'last_name' });
     }
 
     const existingUser = await User.findOne({ where: { email } });

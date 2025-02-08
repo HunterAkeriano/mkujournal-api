@@ -16,4 +16,11 @@ function validationEmailFn(email) {
     return validationEmail.test(email)
 }
 
-module.exports = {validationRoleType, validationEmail, validationEmailFn}
+function getFieldLength(field, length) {
+    if (typeof field !== 'string') {
+        return false;
+    }
+    return field.length >= length;
+}
+
+module.exports = {validationRoleType, validationEmail, validationEmailFn, getFieldLength}

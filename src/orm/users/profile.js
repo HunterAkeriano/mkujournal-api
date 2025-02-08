@@ -27,27 +27,27 @@ module.exports = (sequelize) => {
         },
         state_province: {
             type: Sequelize.STRING(100),
-            allowNull: false,
+            allowNull: true,
         },
         postal_code: {
             type: Sequelize.STRING(100),
-            allowNull: false,
+            allowNull: true,
         },
         phone: {
             type: Sequelize.STRING(100),
-            allowNull: false,
+            allowNull: true,
         },
         city: {
             type: Sequelize.STRING(100),
-            allowNull: false,
+            allowNull: true,
         },
         address_two: {
             type: Sequelize.STRING(100),
-            allowNull: false,
+            allowNull: true,
         },
         address_one: {
             type: Sequelize.STRING(100),
-            allowNull: false,
+            allowNull: true,
         },
     }, {
         timestamps: false,
