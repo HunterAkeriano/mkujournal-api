@@ -25,6 +25,30 @@ module.exports = (sequelize) => {
             unique: true,
             allowNull: false,
         },
+        state_province: {
+            type: Sequelize.STRING(100),
+            allowNull: false,
+        },
+        postal_code: {
+            type: Sequelize.STRING(100),
+            allowNull: false,
+        },
+        phone: {
+            type: Sequelize.STRING(100),
+            allowNull: false,
+        },
+        city: {
+            type: Sequelize.STRING(100),
+            allowNull: false,
+        },
+        address_two: {
+            type: Sequelize.STRING(100),
+            allowNull: false,
+        },
+        address_one: {
+            type: Sequelize.STRING(100),
+            allowNull: false,
+        },
     }, {
         timestamps: false,
         tableName: 'profile',
