@@ -65,3 +65,41 @@
  *       500:
  *         description: Ошибка сервера. Возвращается сообщение об ошибке.
  */
+
+/**
+ * @swagger
+ * /catalog/{id}:
+ *   get:
+ *     summary: Получение конкретного товара по ID
+ *     description: Возвращает конкретный товар по его ID.
+ *     tags: [Catalog]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID товара
+ *     responses:
+ *       200:
+ *         description: Успешное получение товара.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               description: Объект товара каталога
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   example: 1
+ *                 name:
+ *                   type: string
+ *                   example: "Название товара"
+ *                 type:
+ *                   type: string
+ *                   example: "Тип товара"
+ *       404:
+ *         description: Товар не найден.
+ *       500:
+ *         description: Ошибка сервера. Возвращается сообщение об ошибке.
+ */

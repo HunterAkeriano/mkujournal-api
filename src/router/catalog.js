@@ -41,6 +41,23 @@ catalogRouter.get('/all-list', async (req, res) => {
     }
 });
 
+catalogRouter.get('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const product = await catalog.findByPk(id);
+
+        if (!product) {
+            return res.status(404).json({ message: 'Товар не найден' });
+        }
+
+        res.json(product);
+    } catch (error) {
+        console.error('Ошибка при получении товара по ID:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = {
     catalogRouter
 };
