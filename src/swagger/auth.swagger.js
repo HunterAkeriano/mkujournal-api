@@ -29,6 +29,9 @@
  *                 type: string
  *               role_type:
  *                 type: string
+ *                 enum:
+ *                  - regular
+ *                  - whosale
  *             required:
  *               - email
  *               - password

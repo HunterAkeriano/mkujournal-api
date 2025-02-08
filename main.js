@@ -26,7 +26,6 @@ const allowedOrigins = [
 
 const corsOptions = {
     origin: function (origin, callback) {
-        console.log(origin)
         if(origin === undefined) {
             callback(null, true)
         }
@@ -60,7 +59,7 @@ const swaggerOptions = {
     apis: ['./src/swagger/*.js']
 };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -69,6 +68,6 @@ app.use('/auth', authRouter);
 
 app.use(profileRouter)
 
-app.listen(PORT,  HOST, () => {
+app.listen(3000,  'localhost', () => {
     console.log('started', HOST + ':' + PORT);
 });
