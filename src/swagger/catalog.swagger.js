@@ -41,7 +41,18 @@
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/CatalogItem'
+ *                     type: object
+ *                     description: Объект товара каталога
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       name:
+ *                         type: string
+ *                         example: "Название товара"
+ *                       type:
+ *                         type: string
+ *                         example: "Тип товара"
  *                 meta:
  *                   type: object
  *                   properties:
