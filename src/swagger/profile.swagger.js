@@ -121,3 +121,115 @@
  *                   type: string
  *                   example: "Ошибка при получении заказов: ..."
  */
+
+/**
+ * @swagger
+ * /profile/update-profile:
+ *   put:
+ *     summary: Обновление профиля пользователя
+ *     description: Обновляет профиль пользователя. Все поля являются обязательными. Если email изменяется, обновляется также и запись в таблице users.
+ *     tags: [Profile]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Объект с данными для обновления профиля
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - first_name
+ *               - last_name
+ *               - address_one
+ *               - address_two
+ *               - city
+ *               - phone
+ *               - postal_code
+ *               - state_province
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: Адрес электронной почты
+ *                 example: "user@example.com"
+ *               first_name:
+ *                 type: string
+ *                 description: Имя пользователя
+ *                 example: "Иван"
+ *               last_name:
+ *                 type: string
+ *                 description: Фамилия пользователя
+ *                 example: "Иванов"
+ *               address_one:
+ *                 type: string
+ *                 description: Первый адрес
+ *                 example: "ул. Ленина, 1"
+ *               address_two:
+ *                 type: string
+ *                 description: Второй адрес
+ *                 example: "Квартира 101"
+ *               city:
+ *                 type: string
+ *                 description: Город
+ *                 example: "Киев"
+ *               phone:
+ *                 type: string
+ *                 description: Телефон (должен быть валидным)
+ *                 example: "+380501234567"
+ *               postal_code:
+ *                 type: string
+ *                 description: Почтовый индекс
+ *                 example: "01001"
+ *               state_province:
+ *                 type: string
+ *                 description: Область или провинция
+ *                 example: "Киевская область"
+ *     responses:
+ *       200:
+ *         description: Профиль успешно обновлен.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Профіль успішно оновлено"
+ *       400:
+ *         description: Ошибка валидации обязательных полей.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Email is required"
+ *                 field:
+ *                   type: string
+ *                   example: "email"
+ *       404:
+ *         description: Профиль не найден.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Профіль не знайдено"
+ *       500:
+ *         description: Внутренняя ошибка сервера при обновлении профиля.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Помилка оновлення профілю"
+ *                 error:
+ *                   type: string
+ *                   example: "Error details..."
+ */

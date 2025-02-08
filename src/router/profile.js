@@ -1,7 +1,8 @@
 const authorize = require("../middleware/check-authorize");
-const {profile, catalog} = require("../orm");
+const {profile, catalog, user} = require("../orm");
 const profileRouter = require('express').Router();
 const { Sequelize } = require("sequelize");
+const libphonenumber = require('libphonenumber-js');
 
 const Profile = profile
 
@@ -76,6 +77,118 @@ profileRouter.get('/order-history', authorize, async (req, res) => {
     } catch (error) {
         console.error("Ошибка при получении заказов:", error);
         return res.status(500).json({ error: error.message });
+    }
+});
+
+profileRouter.put('/update-profile', authorize, async (req, res) => {
+    try {
+        const existingProfile = await Profile.findOne({ where: { email: req.user.email } });
+        if (!existingProfile) {
+            return res.status(404).json({ message: 'Профіль не знайдено' });
+        }
+        const oldEmail = existingProfile.email;
+
+        const {
+            email,
+            first_name,
+            last_name,
+            address_one,
+            address_two,
+            city,
+            phone,
+            postal_code,
+            state_province
+        } = req.body;
+
+        const updateData = {};
+
+        const fields = [
+            { key: "email", value: email, message: "Email is required" },
+            { key: "first_name", value: first_name, message: "First name is required" },
+            { key: "last_name", value: last_name, message: "Last name is required" },
+            { key: "address_one", value: address_one, message: "Address one is required" },
+            { key: "address_two", value: address_two, message: "Address two is required" },
+            { key: "city", value: city, message: "City is required" },
+            { key: "phone", value: phone, message: "Phone is required" },
+            { key: "postal_code", value: postal_code, message: "Postal code is required" },
+            { key: "state_province", value: state_province, message: "State/Province is required" }
+        ];
+
+        for (const field of fields) {
+            switch (field.key) {
+                case "email":
+                    if (field.value === undefined || field.value === null || field.value === "") {
+                        return res.status(400).json({ message: field.message, field: field.key });
+                    }
+                    updateData.email = field.value;
+                    break;
+                case "first_name":
+                    if (field.value === undefined || field.value === null || field.value === "") {
+                        return res.status(400).json({ message: field.message, field: field.key  });
+                    }
+                    updateData.first_name = field.value;
+                    break;
+                case "last_name":
+                    if (field.value === undefined || field.value === null || field.value === "") {
+                        return res.status(400).json({ message: field.message, field: field.key  });
+                    }
+                    updateData.last_name = field.value;
+                    break;
+                case "address_one":
+                    if (field.value === undefined || field.value === null || field.value === "") {
+                        return res.status(400).json({ message: field.message, field: field.key  });
+                    }
+                    updateData.address_one = field.value;
+                    break;
+                case "address_two":
+                    if (field.value === undefined || field.value === null || field.value === "") {
+                        return res.status(400).json({ message: field.message, field: field.key  });
+                    }
+                    updateData.address_two = field.value;
+                    break;
+                case "city":
+                    if (field.value === undefined || field.value === null || field.value === "") {
+                        return res.status(400).json({ message: field.message, field: field.key  });
+                    }
+                    updateData.city = field.value;
+                    break;
+                case "phone":
+                    if (field.value === undefined || field.value === null || field.value === "") {
+                        return res.status(400).json({ message: field.message, field: field.key  });
+                    }
+
+                    if(!libphonenumber.isValidPhoneNumber(field.value)) {
+                        return res.status(400).json({ message: 'Phone is not valid', field: field.key  });
+                    }
+                    updateData.phone = field.value;
+                    break;
+                case "postal_code":
+                    if (field.value === undefined || field.value === null || field.value === "") {
+                        return res.status(400).json({ message: field.message, field: field.key  });
+                    }
+                    updateData.postal_code = field.value;
+                    break;
+                case "state_province":
+                    if (field.value === undefined || field.value === null || field.value === "") {
+                        return res.status(400).json({ message: field.message, field: field.key  });
+                    }
+                    updateData.state_province = field.value;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        await existingProfile.update(updateData);
+
+        if (email && email !== oldEmail) {
+            await user.update(updateData, { where: { email: oldEmail } });
+        }
+
+        return res.status(200).json({ message: 'Профіль успішно оновлено' });
+    } catch (error) {
+        console.error("Помилка оновлення профілю:", error);
+        return res.status(500).json({ message: 'Помилка оновлення профілю', error: error.message });
     }
 });
 
