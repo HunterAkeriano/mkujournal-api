@@ -1,5 +1,5 @@
 const catalogRouter = require('express').Router();
-const {catalog} = require("../orm");
+const {catalog, profile} = require("../orm");
 const { Sequelize } = require("sequelize");
 
 catalogRouter.get('/all-list', async (req, res) => {
@@ -57,6 +57,63 @@ catalogRouter.get('/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+catalogRouter.post('/create-order', async (req, res) => {
+    try {
+        const { order, user_id } = req.body;
+
+        if (!Array.isArray(order)) {
+            return res.status(400).json({ error: 'Поле "order" должно быть массивом объектов' });
+        }
+
+        for (const item of order) {
+            if (typeof item.product_id !== 'number') {
+                return res.status(400).json({ error: 'Каждый объект заказа должен содержать числовое поле "product_id"', field: 'product_id' });
+            }
+            if (typeof item.quantity !== 'number' || item.quantity <= 0) {
+                return res.status(400).json({ error: 'Каждый объект заказа должен содержать положительное число в поле "quantity"', field: 'quantity' });
+            }
+        }
+
+        const productIds = order.map(item => item.product_id);
+
+        const products = await catalog.findAll({
+            where: {
+                id: {
+                    [Sequelize.Op.in]: productIds
+                }
+            }
+        });
+
+        const foundIds = new Set(products.map(product => product.id));
+        const allExist = productIds.every(id => foundIds.has(id));
+
+        if (!allExist) {
+            return res.status(400).json({ error: 'Некоторые товары из заказа не существуют' });
+        }
+
+        if (!user_id) {
+            return res.status(200).json({ data: 'Заказ успешно оформлен' });
+        }
+
+        const userProfile = await profile.findOne({ where: { user_id } });
+        if (!userProfile) {
+            return res.status(404).json({ error: "Профиль не найден" });
+        }
+
+        const newOrderHistory = [...(userProfile.matrix || []), order];
+
+        await userProfile.update({ matrix: newOrderHistory });
+
+        return res.status(200).json({data: 'Заказ успешно оформлен.'})
+    } catch (error) {
+        console.error('Ошибка при обработке запроса create-order:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+
 
 module.exports = {
     catalogRouter

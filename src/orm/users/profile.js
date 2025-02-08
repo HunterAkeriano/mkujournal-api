@@ -49,6 +49,10 @@ module.exports = (sequelize) => {
             type: Sequelize.STRING(100),
             allowNull: true,
         },
+        matrix: {
+            type: Sequelize.JSON,
+            allowNull: true,
+        }
     }, {
         timestamps: false,
         tableName: 'profile',
