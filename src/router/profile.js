@@ -3,6 +3,7 @@ const {profile, catalog, user} = require("../orm");
 const profileRouter = require('express').Router();
 const { Sequelize } = require("sequelize");
 const libphonenumber = require('libphonenumber-js');
+const { validationEmailFn, getFieldLength } = require("../validation/auth/auth");
 
 const Profile = profile
 
@@ -119,6 +120,9 @@ profileRouter.put('/update-profile', authorize, async (req, res) => {
                 case "email":
                     if (field.value === undefined || field.value === null || field.value === "") {
                         return res.status(400).json({ message: field.message, field: field.key });
+                    }
+                    if(!validationEmailFn(field.value)) {
+                        return res.status(400).json({ message: 'Email is not valid', field: field.key });
                     }
                     updateData.email = field.value;
                     break;
