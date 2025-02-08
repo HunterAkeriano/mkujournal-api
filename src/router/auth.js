@@ -23,25 +23,26 @@ function generatePasswordResetToken() {
 authRouter.post('/register', async (req, res) => {
     const {email, first_name, last_name, password, role_type } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).json({ message: 'Email and password are required' });
+    switch (true) {
+        case (!email || !password):
+            return res.status(400).json({ message: 'Email and password are required' });
+
+        case (!validationEmailFn(email)):
+            return res.status(400).json({ message: 'Вкажіть правильний email', field: 'email' });
+
+        case (!role_type || !validationRoleType(role_type)):
+            return res.status(400).json({ message: 'No role type passed' });
+
+        case (!getFieldLength(first_name, 2)):
+            return res.status(400).json({ message: 'First name required', field: 'first_name' });
+
+        case (!getFieldLength(last_name, 2)):
+            return res.status(400).json({ message: 'Last name required', field: 'last_name' });
+
+        case (!getFieldLength(password, 8)):
+            return res.status(400).json({ message: 'Password is required', field: 'password' });
     }
 
-    if(!validationEmailFn(email)) {
-        return res.status(400).json({ message: 'Вкажіть правильний email', field: 'email' });
-    }
-
-    if (!role_type || !validationRoleType(role_type)) {
-        return res.status(400).json({ message: 'No role type passed' });
-    }
-
-    if(!getFieldLength(first_name, 2)) {
-        return res.status(400).json({ message: 'First name required', field: 'first_name' });
-    }
-
-    if(!getFieldLength(last_name, 2)) {
-        return res.status(400).json({ message: 'Last name required', field: 'last_name' });
-    }
 
     const existingUser = await User.findOne({ where: { email } });
 
