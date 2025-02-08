@@ -1,6 +1,7 @@
 const express = require('express');
 const {authRouter} = require("./src/router/auth");
 const {profileRouter} = require("./src/router/profile");
+const {catalogRouter} = require("./src/router/catalog");
 
 require('dotenv').config();
 const cors = require('cors');
@@ -64,10 +65,11 @@ app.use(cors(corsOptions));
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/auth', authRouter);
+app.use('/catalog', catalogRouter);
 
 
 app.use(profileRouter)
 
-app.listen(PORT,  HOST, () => {
+app.listen(3000,  'localhost', () => {
     console.log('started', HOST + ':' + PORT);
 });

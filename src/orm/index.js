@@ -11,10 +11,11 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
 
 const User = require('./users/users')(sequelize);
 const Profile = require('./users/profile')(sequelize);
-
+const Catalog = require('./catalog/catalog')(sequelize);
 
 module.exports = {
     sequelize,
     user: User,
     profile: Profile,
+    catalog: Catalog
 }
