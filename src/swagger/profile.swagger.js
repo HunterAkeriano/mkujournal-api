@@ -7,7 +7,7 @@
 
 /**
  * @swagger
- * /info:
+ * /profile/info:
  *   get:
  *     summary: Получение информации о профиле
  *     description: Возвращает данные профиля авторизованного пользователя.
@@ -48,7 +48,7 @@
 
 /**
  * @swagger
- * /order-history:
+ * /profile/order-history:
  *   get:
  *     summary: Получение истории заказов пользователя
  *     description: Возвращает историю заказов для авторизованного пользователя.

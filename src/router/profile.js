@@ -6,14 +6,20 @@ const { Sequelize } = require("sequelize");
 const Profile = profile
 
 profileRouter.get('/info', authorize, async (req, res) => {
-   try {
-       const existingUser = await Profile.findOne({ where: { email: req.user.email } });
+    try {
+        const existingUser = await Profile.findOne({ where: { email: req.user.email } });
+        if (!existingUser) {
+            return res.status(404).json({ message: 'Профіль не знайдено' });
+        }
+        const user = existingUser.get({ plain: true });
+        const { matrix, ...userWithoutMatrix } = user;
 
-       res.status(200).json(existingUser)
-   }catch (error) {
-       res.status(400).json({ message: 'Профіль не знайдено', error });
-   }
-})
+        res.status(200).json(userWithoutMatrix);
+    } catch (error) {
+        res.status(400).json({ message: 'Профіль не знайдено', error });
+    }
+});
+
 
 profileRouter.get('/order-history', authorize, async (req, res) => {
     try {
