@@ -68,7 +68,7 @@ app.use('/auth', authRouter);
 app.use('/catalog', catalogRouter);
 
 
-app.use(profileRouter)
+app.use('/profile', profileRouter)
 
 app.listen(3000,  'localhost', () => {
     console.log('started', HOST + ':' + PORT);

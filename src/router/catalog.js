@@ -2,6 +2,15 @@ const catalogRouter = require('express').Router();
 const {catalog, profile} = require("../orm");
 const { Sequelize } = require("sequelize");
 
+const generateOrderNumber = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < 8; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+};
+
 catalogRouter.get('/all-list', async (req, res) => {
     try {
         const { type } = req.query;
@@ -75,6 +84,22 @@ catalogRouter.post('/create-order', async (req, res) => {
             }
         }
 
+        const generateRandomOrderNumber = () => {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 8; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        };
+
+        const orderNumber = generateRandomOrderNumber();
+        const currentDate = new Date();
+        order.forEach(item => {
+            item.date_created = currentDate;
+            item.order_number = orderNumber;
+        });
+
         const productIds = order.map(item => item.product_id);
 
         const products = await catalog.findAll({
@@ -105,15 +130,12 @@ catalogRouter.post('/create-order', async (req, res) => {
 
         await userProfile.update({ matrix: newOrderHistory });
 
-        return res.status(200).json({data: 'Заказ успешно оформлен.'})
+        return res.status(200).json({ data: 'Заказ успешно оформлен.' });
     } catch (error) {
         console.error('Ошибка при обработке запроса create-order:', error);
         res.status(500).json({ error: error.message });
     }
 });
-
-
-
 
 module.exports = {
     catalogRouter
