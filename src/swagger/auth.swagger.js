@@ -19,26 +19,20 @@
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               first_name:
  *                 type: string
- *               surName:
+ *               last_name:
  *                 type: string
- *               dateCreated:
- *                 type: string
- *                 format: date
  *               email:
  *                 type: string
  *               password:
  *                 type: string
- *               phone:
- *                 type: string
- *               facultet:
- *                 type: string
- *               roleType:
+ *               role_type:
  *                 type: string
  *             required:
  *               - email
  *               - password
+ *               - role_type
  *     responses:
  *       201:
  *         description: Пользователь успешно зарегистрирован

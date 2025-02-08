@@ -4,13 +4,13 @@ const {profileRouter} = require("./src/router/profile");
 
 require('dotenv').config();
 const cors = require('cors');
-const {facultetRouter} = require("./src/router/facultet");
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 
 
 const allowedOrigins = [
     'http://127.1.3.228:3000',
+    'http://127.1.4.116:3000/',
     'http://127.1.3.228:3000/',
     'http://localhost:5173',
     'https://mku-journal.com.ua',
@@ -26,6 +26,7 @@ const allowedOrigins = [
 
 const corsOptions = {
     origin: function (origin, callback) {
+        console.log(origin)
         if(origin === undefined) {
             callback(null, true)
         }
@@ -48,9 +49,9 @@ const swaggerOptions = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'MKU API',
+            title: 'Vitamin API',
             version: '1.0.0',
-            description: 'Документация API для MKU Journal',
+            description: 'Документация API для Vitamin Online',
         },
         servers: [
             { url: 'https://www.mku-journal.online' }
@@ -63,7 +64,6 @@ app.use(cors(corsOptions));
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.use('/facultet', facultetRouter);
 app.use('/auth', authRouter);
 
 

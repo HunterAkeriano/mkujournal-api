@@ -6,24 +6,12 @@ module.exports = (sequelize) => {
             unique: true,
             allowNull: false,
         },
-        name: {
+        first_name: {
             type: Sequelize.STRING(100),
             allowNull: false,
         },
-        sur_name: {
+        last_name: {
             type: Sequelize.STRING(100),
-            allowNull: false,
-        },
-        date_created: {
-            type: Sequelize.DATE,
-            allowNull: false,
-        },
-        phone: {
-            type: Sequelize.STRING(19),
-            allowNull: false,
-        },
-        facultet_id: {
-            type: Sequelize.INTEGER,
             allowNull: false,
         },
         user_id: {
@@ -37,14 +25,6 @@ module.exports = (sequelize) => {
             unique: true,
             allowNull: false,
         },
-        user_photo: {
-            type: Sequelize.STRING(255),
-            allowNull: false,
-        },
-        gender: {
-            type: Sequelize.STRING(),
-            allowNull: false,
-        }
     }, {
         timestamps: false,
         tableName: 'profile',

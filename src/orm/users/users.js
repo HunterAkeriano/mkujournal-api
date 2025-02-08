@@ -27,10 +27,6 @@ module.exports = (sequelize) => {
             defaultValue: null,
             allowNull: true,
         },
-        is_activated: {
-            type: Sequelize.BOOLEAN,
-            defaultValue: false,
-        },
         user_id: {
             type: Sequelize.STRING(100),
             unique: true,
@@ -39,11 +35,6 @@ module.exports = (sequelize) => {
         },
         role_type: {
             type: Sequelize.STRING(5),
-            unique: true,
-            allowNull: false,
-        },
-        is_admin: {
-            type: Sequelize.BOOLEAN,
             unique: true,
             allowNull: false,
         },

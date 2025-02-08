@@ -20,13 +20,13 @@ function generatePasswordResetToken() {
 }
 
 authRouter.post('/register', async (req, res) => {
-    const {name, surName, dateCreated, email, password, phone, facultet, roleType, photoUrl, gender } = req.body;
+    const {email, first_name, last_name, password, role_type } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    if (!roleType) {
+    if (!role_type) {
         return res.status(400).json({ message: 'No role type passed' });
     }
 
@@ -45,25 +45,18 @@ authRouter.post('/register', async (req, res) => {
 
         const user = await User.create({
             email,
+            role_type,
             refresh_token: refreshToken,
-            role_type: roleType,
             password: hashedPassword,
-            is_activated: false,
             user_id: userId,
-            is_admin: false,
         });
 
         await Profile.create({
             email,
-            name,
-            sur_name: surName,
-            date_created: new Date(dateCreated),
-            phone,
-            facultet_id: facultet,
+            first_name,
+            last_name,
+            role_type,
             user_id: userId,
-            role_type: roleType,
-            user_photo: photoUrl,
-            gender: gender || 'man'
         });
 
         transporter.sendMail({
@@ -98,10 +91,6 @@ authRouter.post('/login', async (req, res) => {
     const isPasswordValid = await comparePassword(password, user.password);
     if (!isPasswordValid) {
         return res.status(400).json({ message: 'Не правильний пароль', field: 'password' });
-    }
-
-    if(!user.is_activated) {
-        return res.status(400).json({ message: 'Ваш аккаунт не верифікований', field: 'email' });
     }
 
     const accessToken = generateAccessToken(user.user_id);
@@ -236,9 +225,7 @@ authRouter.post('/set-new-password', async (req, res) => {
     }
 
     try {
-        const hashedPassword = await hashPassword(newPassword);
-
-        existingUser.password = hashedPassword;
+        existingUser.password =  await hashPassword(newPassword);
         existingUser.reset_token = null;
         existingUser.reset_token_expiration = null;
         await existingUser.save();
