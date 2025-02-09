@@ -4,6 +4,7 @@ const profileRouter = require('express').Router();
 const { Sequelize } = require("sequelize");
 const libphonenumber = require('libphonenumber-js');
 const { validationEmailFn, getFieldLength } = require("../validation/auth/auth");
+const cardValidator = require('card-validator');
 
 const Profile = profile
 
@@ -193,6 +194,70 @@ profileRouter.put('/update-profile', authorize, async (req, res) => {
     } catch (error) {
         console.error("Помилка оновлення профілю:", error);
         return res.status(500).json({ message: 'Помилка оновлення профілю', error: error.message });
+    }
+});
+
+profileRouter.put('/update-card-info', authorize, async (req, res) => {
+    try {
+        const { card_number, card_cvv, card_date } = req.body;
+
+        if (card_number === undefined || card_cvv === undefined || card_date === undefined) {
+            return res.status(400).json({
+                message: 'Все поля card_number, card_cvv и card_date обязательны для обновления информации о карте'
+            });
+        }
+
+        const validations = [
+            { field: 'card_number', value: card_number },
+            { field: 'card_cvv', value: card_cvv },
+            { field: 'card_date', value: card_date }
+        ];
+
+        for (const { field, value } of validations) {
+            switch (field) {
+                case 'card_number': {
+                    const cardValidation = cardValidator.number(value);
+                    if (!cardValidation.isValid) {
+                        return res.status(400).json({ message: 'Неверный номер карты', field: 'card_number' });
+                    }
+                    break;
+                }
+                case 'card_cvv': {
+                    const cvvValidation = cardValidator.cvv(value, 3);
+                    if (!cvvValidation.isValid) {
+                        return res.status(400).json({ message: 'Неверный номер CVV', field: 'card_cvv' });
+                    }
+                    break;
+                }
+                case 'card_date': {
+                    const expValidation = cardValidator.expirationDate(value);
+                    if (!expValidation.isValid) {
+                        return res.status(400).json({ message: 'Неверная дата истечения срока', field: 'card_date' });
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        const existingProfile = await Profile.findOne({ where: { email: req.user.email } });
+        if (!existingProfile) {
+            return res.status(404).json({ message: 'Профіль не знайдено' });
+        }
+
+        await existingProfile.update({
+            card_info: {
+                card_number,
+                card_cvv,
+                card_date
+            }
+        });
+
+        return res.status(200).json({ message: 'Информация о карте успешно обновлена' });
+    } catch (error) {
+        console.error("Ошибка обновления информации о карте:", error);
+        return res.status(500).json({ message: 'Ошибка обновления информации о карте', error: error.message });
     }
 });
 

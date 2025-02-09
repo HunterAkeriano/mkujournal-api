@@ -52,6 +52,10 @@ module.exports = (sequelize) => {
         matrix: {
             type: Sequelize.JSON,
             allowNull: true,
+        },
+        card_info: {
+            type: Sequelize.JSON,
+            allowNull: true,
         }
     }, {
         timestamps: false,

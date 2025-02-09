@@ -233,3 +233,84 @@
  *                   type: string
  *                   example: "Error details..."
  */
+/**
+ * @swagger
+ * /profile/update-card-info:
+ *   put:
+ *     summary: Обновление информации о банковской карте
+ *     description: Обновляет информацию о банковской карте пользователя. Требуется предоставить номер карты, CVV и дату истечения срока действия.
+ *     tags: [Profile]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Объект с информацией о банковской карте для обновления
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - card_number
+ *               - card_cvv
+ *               - card_date
+ *             properties:
+ *               card_number:
+ *                 type: string
+ *                 description: Номер банковской карты
+ *                 example: "4111111111111111"
+ *               card_cvv:
+ *                 type: string
+ *                 description: CVV-код карты
+ *                 example: "123"
+ *               card_date:
+ *                 type: string
+ *                 description: Дата истечения срока действия карты (формат MM/YY или MM/YYYY)
+ *                 example: "12/24"
+ *     responses:
+ *       200:
+ *         description: Информация о карте успешно обновлена
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Информация о карте успешно обновлена"
+ *       400:
+ *         description: Ошибка валидации входных данных
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Неверный номер карты"
+ *                 field:
+ *                   type: string
+ *                   example: "card_number"
+ *       404:
+ *         description: Профиль не найден
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Профіль не знайдено"
+ *       500:
+ *         description: Ошибка обновления информации о карте
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Ошибка обновления информации о карте"
+ *                 error:
+ *                   type: string
+ *                   example: "Error details..."
+ */
