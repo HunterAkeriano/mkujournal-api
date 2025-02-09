@@ -5,6 +5,7 @@ const { Sequelize } = require("sequelize");
 const libphonenumber = require('libphonenumber-js');
 const { validationEmailFn, getFieldLength } = require("../validation/auth/auth");
 const cardValidator = require('card-validator');
+const { comparePassword, hashPassword } = require('../utils/token');
 
 const Profile = profile
 
@@ -258,6 +259,36 @@ profileRouter.put('/update-card-info', authorize, async (req, res) => {
     } catch (error) {
         console.error("Ошибка обновления информации о карте:", error);
         return res.status(500).json({ message: 'Ошибка обновления информации о карте', error: error.message });
+    }
+});
+
+
+profileRouter.put('/change-password', authorize, async (req, res) => {
+    try {
+        const { old_password, new_password } = req.body;
+
+        if (!old_password || !new_password) {
+            return res.status(400).json({ message: 'Оба поля old_password и new_password обязательны' });
+        }
+
+        const existingUser = await user.findOne({ where: { email: req.user.email } });
+        if (!existingUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const passwordMatches = comparePassword(old_password, existingUser.password);
+        if (!passwordMatches) {
+            return res.status(400).json({ message: 'Old password is incorrect', field: 'old_password' });
+        }
+
+        const hashedPassword = hashPassword(new_password);
+
+        await existingUser.update({ password: hashedPassword });
+
+        return res.status(200).json({ message: 'Password updated successfully' });
+    } catch (error) {
+        console.error("Ошибка обновления пароля:", error);
+        return res.status(500).json({ message: 'Error updating password', error: error.message });
     }
 });
 

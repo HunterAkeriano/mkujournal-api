@@ -314,3 +314,76 @@
  *                   type: string
  *                   example: "Error details..."
  */
+/**
+ * @swagger
+ * /profile/change-password:
+ *   put:
+ *     summary: Изменение пароля пользователя
+ *     description: Изменяет пароль пользователя. Требуется предоставить старый и новый пароль.
+ *     tags: [Profile]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Объект с паролями для смены
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - old_password
+ *               - new_password
+ *             properties:
+ *               old_password:
+ *                 type: string
+ *                 description: Старый пароль пользователя
+ *                 example: "oldPassword123"
+ *               new_password:
+ *                 type: string
+ *                 description: Новый пароль пользователя
+ *                 example: "newPassword456"
+ *     responses:
+ *       200:
+ *         description: Пароль успешно обновлен.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Password updated successfully"
+ *       400:
+ *         description: Неверный старый пароль или отсутствуют необходимые поля.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Old password is incorrect"
+ *       404:
+ *         description: Пользователь не найден.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User not found"
+ *       500:
+ *         description: Внутренняя ошибка сервера при обновлении пароля.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Error updating password"
+ *                 error:
+ *                   type: string
+ *                   example: "Error details..."
+ */
