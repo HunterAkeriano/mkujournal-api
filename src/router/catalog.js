@@ -50,7 +50,7 @@ catalogRouter.get('/all-list', async (req, res) => {
     }
 });
 
-catalogRouter.get('/:id', async (req, res) => {
+catalogRouter.get('/:id/info', async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -136,6 +136,24 @@ catalogRouter.post('/create-order', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+catalogRouter.get('/recommendations', async (req, res) => {
+    try {
+        const isMain = req.query.is_main !== undefined;
+        const orderClause = isMain ? [['id', 'ASC']] : Sequelize.literal('RANDOM()');
+
+        const recommendedProducts = await catalog.findAll({
+            order: orderClause,
+            limit: 4
+        });
+
+        return res.status(200).json({ data: recommendedProducts });
+    } catch (error) {
+        console.error("Ошибка при получении рекомендованных товаров:", error);
+        return res.status(500).json({ error: error.message });
+    }
+});
+
 
 module.exports = {
     catalogRouter

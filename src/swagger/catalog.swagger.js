@@ -68,7 +68,7 @@
 
 /**
  * @swagger
- * /catalog/{id}:
+ * /catalog/{id}/info:
  *   get:
  *     summary: Получение конкретного товара по ID
  *     description: Возвращает конкретный товар по его ID.
@@ -182,4 +182,53 @@
  *                 error:
  *                   type: string
  *                   example: "Ошибка при обработке запроса create-order: ..."
+ */
+/**
+ * @swagger
+ * /catalog/recommendations:
+ *   get:
+ *     summary: Получение рекомендуемых товаров
+ *     description: >
+ *       Возвращает 4 товара из каталога. Если передан параметр is_main, то возвращаются первые 4 товара (отсортированные по возрастанию id),
+ *       иначе возвращаются 4 случайных товара. is_main нужен для главной страницы только, для остальные случаев не прокидываем этот параметр.
+ *     tags: [Catalog]
+ *     parameters:
+ *       - in: query
+ *         name: is_main
+ *         schema:
+ *           type: boolean
+ *         description: Если установлен в true, возвращает первые 4 товара, иначе — 4 случайных товара.
+ *     responses:
+ *       200:
+ *         description: Успешное получение рекомендуемых товаров.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   description: Массив рекомендованных товаров
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       name:
+ *                         type: string
+ *                         example: "Название товара"
+ *                       type:
+ *                         type: string
+ *                         example: "Тип товара"
+ *       500:
+ *         description: Внутренняя ошибка сервера.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Ошибка при получении рекомендованных товаров"
  */
