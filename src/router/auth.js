@@ -51,11 +51,11 @@ authRouter.post('/register', async (req, res) => {
     }
 
     const hashedPassword = await hashPassword(password);
-    const userId = uuidv4();
-
-    const refreshToken = generateRefreshToken(userId);
 
     try {
+        const userId = uuidv4();
+
+        const refreshToken = generateRefreshToken(userId);
 
         const user = await User.create({
             email,
@@ -133,11 +133,11 @@ authRouter.post('/refresh-token', async (req, res) => {
     try {
         const decoded = verifyRefreshToken(refreshToken);
 
-        console.log(decoded)
 
         const user = await User.findOne({
-            where: { user_id: decoded.user_id }
+            where: { user_id: decoded.userId }
         });
+
 
         if (!user || user.refresh_token !== refreshToken) {
             return res.status(403).json({ message: 'Invalid refresh token' });
