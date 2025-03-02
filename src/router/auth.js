@@ -76,7 +76,7 @@ authRouter.post('/register', async (req, res) => {
         transporter.sendMail({
             from: 'mkujounal@gmail.com',
             to: email,
-            subject: 'MКУ-ЖУНАЛ: Ваш аккаунт успішно зареєстрований',
+            subject: 'Vitamin: Ваш аккаунт зареєстрований',
             html: sendRegister()
         })
 
@@ -180,12 +180,12 @@ authRouter.post('/reset-password', async (req, res) => {
         existingUser.reset_token_expiration = resetTokenExpiration;
         await existingUser.save();
 
-        const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+        const resetLink = `https://3p-vln.github.io/Vitamin/reset-password.html?reset=${resetToken}`;
 
         transporter.sendMail({
             from: 'mkujounal@gmail.com',
             to: email,
-            subject: 'MКУ-ЖУНАЛ: Відновлення пароля',
+            subject: 'Vitamin: Відновлення пароля',
             html: resendPassword(resetLink)
         });
 

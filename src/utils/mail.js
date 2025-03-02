@@ -4,11 +4,9 @@ function headerMKU(){
             <table role="presentation" style="width: 100%; border: 0;">
                 <tr>
                     <td style="text-align: left;">
-                        <a href="https://mku-journal.com.ua/">mku-journal.com.ua</a>
+                        <a href="https://3p-vln.github.io/Vitamin/">Vitamin</a>
                     </td>
-                    <td style="text-align: right;">
-                        <img src="https://mku-journal.com.ua/logo.png" alt="logo" />
-                    </td>
+                 
                 </tr>
             </table>
         </header>
@@ -25,7 +23,7 @@ function resendPassword(password) {
                     <p style="margin: 0; font-size: 18px; font-weight: 700;">Ваше посилання для відновлення:</p>
                     <p style="font-weight: bold; margin-top: 10px;">${password}</p>
                       <p style="font-weight: bold; margin-top: 10px;">Це були не ви? Проігноруєте повідомлення, з повагою - команда Розробників</p>
-                    <p style="font-weight: bold; margin-top: 10px;">Посилання на сайт: <a href="https://mku-journal.com.ua/">https://mku-journal.com.ua/</a></p>
+                    <p style="font-weight: bold; margin-top: 10px;">Посилання на сайт: <a href="https://3p-vln.github.io/Vitamin/">Vitamin</a></p>
                 </td>
             </tr>
         </table>
@@ -41,7 +39,7 @@ function sendRegister() {
                 <td>
                     <p style="margin: 0; font-size: 18px; font-weight: 700;">Ви успішно зарєструвались на сайті</p>
                     <p style="font-weight: bold; margin-top: 10px;">Очікуйте верифікацію вашого аккаунту</p>
-                    <p style="font-weight: bold; margin-top: 10px;">З повагою, админістрація МКУ ім.Пилипа Орлика</p>
+                    <p style="font-weight: bold; margin-top: 10px;">З повагою, админістрація Vitamin</p>
                 </td>
             </tr>
         </table>
