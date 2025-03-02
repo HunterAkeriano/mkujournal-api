@@ -211,7 +211,7 @@ authRouter.get('/check-reset-token', async (req, res) => {
     }
 
     if (existingUser.reset_token_expiration < new Date()) {
-        return res.status(400).json({ message: 'Токен для відновлення пароля вийшов' });
+        return res.status(403).json({ message: 'Токен для відновлення пароля вийшов' });
     }
 
     const existingProfile = await Profile.findOne({ where: { email: existingUser.email } });
