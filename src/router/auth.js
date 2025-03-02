@@ -217,7 +217,7 @@ authRouter.get('/check-reset-token', async (req, res) => {
     const existingProfile = await Profile.findOne({ where: { email: existingUser.email } });
 
     return res.status(200).json({
-        full_name: existingProfile.name + ' ' + existingProfile.sur_name,
+        full_name: existingProfile.first_name + ' ' + existingProfile.last_name,
         photo: existingProfile.user_photo,
         role: existingUser.role_type,
         email: existingUser.email,
