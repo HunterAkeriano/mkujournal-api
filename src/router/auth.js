@@ -114,7 +114,7 @@ authRouter.post('/login', async (req, res) => {
     const accessToken = generateAccessToken(user.user_id);
     const refreshToken = generateRefreshToken(user.user_id);
 
-    user.refreshToken = refreshToken;
+    user.refresh_token = refreshToken;
     await user.save();
 
     res.json({
