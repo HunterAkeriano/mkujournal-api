@@ -73,7 +73,10 @@ profileRouter.get('/order-history', authorize, async (req, res) => {
                 total_sum: +(+(productMap[item.product_id].price || 0) * item.quantity * (1 - ((productMap[item.product_id].discount || 0) / 100))).toFixed(2)
             }));
 
-            return { date_created, items, order_number };
+            const total_sum_order = items.reduce((sum, item) => sum + item.total_sum, 0);
+
+
+            return { date_created, items, order_number, total_sum_order };
         });
 
         return res.status(200).json({ orders: ordersDetailed });
