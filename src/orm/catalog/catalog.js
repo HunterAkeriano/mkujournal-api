@@ -13,6 +13,9 @@ module.exports = (sequelize) => {
         img: {
             type: Sequelize.STRING,
         },
+        img_webp: {
+            type: Sequelize.STRING,
+        },
         legal_disclaimer: {
             type: Sequelize.STRING,
         },

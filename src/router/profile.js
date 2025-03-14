@@ -66,19 +66,22 @@ profileRouter.get('/order-history', authorize, async (req, res) => {
             const date_created = order.length > 0 ? order[0].date_created : null;
             const order_number = order.length > 0 ? order[0].order_number : null;
 
-            const items =  order.map(item => ({
-                product: productMap[item.product_id] || null,
-                quantity: item.quantity,
-                is_discount: !!productMap[item.product_id].discount,
-                total_sum: +(+(productMap[item.product_id].price || 0) * item.quantity * (1 - ((productMap[item.product_id].discount || 0) / 100))).toFixed(2)
-            }));
+            const items = order.map(item => {
+                const product = productMap[item.product_id] || null;
+                const price = Number(product?.price) || 0;
+                const discount = Number(product?.discount) || 0;
+                const quantity = item.quantity;
+                const discounted_price = +(price - (price * (discount / 100))).toFixed(2);
+                let total_sum = discounted_price * quantity;
+                total_sum = Math.round(total_sum * 100) / 100;
+
+                return { product, quantity, is_discount: !!discount, total_sum };
+            });
 
             const total_sum_order = items.reduce((sum, item) => sum + item.total_sum, 0);
 
-
             return { date_created, items, order_number, total_sum_order };
         });
-
         return res.status(200).json({ orders: ordersDetailed });
     } catch (error) {
         console.error("Ошибка при получении заказов:", error);
