@@ -68,15 +68,36 @@ profileRouter.get('/order-history', authorize, async (req, res) => {
 
             const items = order.map(item => {
                 const product = productMap[item.product_id] || null;
-                const price = Number(product?.price) || 0;
-                const discount = Number(product?.discount) || 0;
-                const quantity = item.quantity;
-                const discounted_price = +(price - (price * (discount / 100))).toFixed(2);
-                let total_sum = discounted_price * quantity;
-                total_sum = Math.round(total_sum * 100) / 100;
 
-                return { product, quantity, is_discount: !!discount, total_sum };
-            });
+                if (product) {
+                    const { dataValues } = product;
+
+                    const formattedProduct = {
+                        ...dataValues,
+                        img: {
+                            img_default: dataValues.img,
+                            img_webp: dataValues.img_webp,
+                            img_height: dataValues.img_height,
+                            img_width: dataValues.img_width
+                        }
+                    };
+
+                    delete formattedProduct.img_webp;
+                    delete formattedProduct.img_width;
+                    delete formattedProduct.img_height;
+
+                    const price = Number(formattedProduct?.price) || 0;
+                    const discount = Number(formattedProduct?.discount) || 0;
+                    const quantity = item.quantity;
+                    const discounted_price = +(price - (price * (discount / 100))).toFixed(2);
+                    let total_sum = discounted_price * quantity;
+                    total_sum = Math.round(total_sum * 100) / 100;
+
+                    return { product: formattedProduct, quantity, is_discount: !!discount, total_sum };
+                }
+
+                return null;
+            }).filter(item => item !== null);
 
             const total_sum_order = items.reduce((sum, item) => sum + item.total_sum, 0);
 

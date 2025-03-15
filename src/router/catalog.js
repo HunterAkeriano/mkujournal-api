@@ -71,7 +71,22 @@ catalogRouter.get('/:id/info', async (req, res) => {
             return res.status(404).json({ message: 'Товар не найден' });
         }
 
-        res.json(product);
+        const productResponse = {
+            ...product.toJSON(),
+            img: {
+                img_default: product.img,
+                img_webp: product.img_webp,
+                img_height: product.img_height,
+                img_width: product.img_width
+            }
+        };
+
+        delete productResponse.img_webp;
+        delete productResponse.img_height;
+        delete productResponse.img_width;
+
+
+        res.json(productResponse);
     } catch (error) {
         console.error('Ошибка при получении товара по ID:', error);
         res.status(500).json({ error: error.message });
@@ -158,7 +173,26 @@ catalogRouter.get('/recommendations', async (req, res) => {
             limit: 4
         });
 
-        return res.status(200).json({ data: recommendedProducts });
+        const formattedProducts = recommendedProducts.map(product => {
+            const productData = product.toJSON();
+
+            const formattedProduct = {
+                ...productData,
+                img: {
+                    img_default: productData.img,
+                    img_webp: productData.img_webp,
+                    img_height: productData.img_height,
+                    img_width: productData.img_width
+                }
+            };
+            delete formattedProduct.img_webp;
+            delete formattedProduct.img_width;
+            delete formattedProduct.img_height;
+
+            return formattedProduct;
+        });
+
+        return res.status(200).json({ data: formattedProducts });
     } catch (error) {
         console.error("Ошибка при получении рекомендованных товаров:", error);
         return res.status(500).json({ error: error.message });
