@@ -16,6 +16,12 @@ module.exports = (sequelize) => {
         img_webp: {
             type: Sequelize.STRING,
         },
+        img_width: {
+            type: Sequelize.STRING,
+        },
+        img_height: {
+            type: Sequelize.STRING,
+        },
         legal_disclaimer: {
             type: Sequelize.STRING,
         },

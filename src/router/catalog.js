@@ -37,7 +37,18 @@ catalogRouter.get('/all-list', async (req, res) => {
         const totalPages = Math.ceil(count / limit);
 
         res.json({
-            data: rows,
+            data: rows.map(item => {
+                const { img, img_webp, img_height, img_width, ...rest } = item.toJSON();
+                return {
+                    ...rest,
+                    img: {
+                        img_default: img,
+                        img_webp: img_webp,
+                        img_height: img_height,
+                        img_width: img_width,
+                    },
+                };
+            }),
             meta: {
                 totalItems: count,
                 currentPage: page,
