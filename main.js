@@ -2,6 +2,7 @@ const express = require('express');
 const {authRouter} = require("./src/router/auth");
 const {profileRouter} = require("./src/router/profile");
 const {catalogRouter} = require("./src/router/catalog");
+const {request} = require("./src/orm");
 
 require('dotenv').config();
 const cors = require('cors');
@@ -69,6 +70,50 @@ app.use('/catalog', catalogRouter);
 
 
 app.use('/profile', profileRouter)
+
+app.post('/send-request', async (req, res) => {
+    try {
+        const {
+            opinionMentor,
+            opinionCourse,
+            improvementSuggestions,
+            dissatisfaction,
+            mood
+        } = req.body;
+
+        if (!opinionMentor || !opinionCourse || !improvementSuggestions || !dissatisfaction || !mood) {
+            return res.status(400).json({ error: 'Все поля должны быть заполнены' });
+        }
+
+        const feedbackText = `
+            Ваше мнение о менторе: ${opinionMentor}
+            Ваше мнение о курсе: ${opinionCourse}
+            Чтоб вы хотели улучшить: ${improvementSuggestions}
+            Чем вы не довольны: ${dissatisfaction}
+            Ваше настроение: ${mood}
+        `;
+
+        console.log(feedbackText)
+
+        await request.create({ request: feedbackText });
+
+        return res.status(201).json({ message: 'Отзыв успешно сохранен' });
+    } catch (error) {
+        console.error('Ошибка при сохранении отзыва:', error);
+        return res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+app.get('/send-request', async (req, res) => {
+    try {
+        const feedbacks = await request.findAll({ attributes: ['request'] });
+
+        return res.status(200).json({ data: feedbacks });
+    } catch (error) {
+        console.error('Ошибка при получении отзывов:', error);
+        return res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
 
 app.listen(3000,  'localhost', () => {
     console.log('started', HOST + ':' + PORT);
