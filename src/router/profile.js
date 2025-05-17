@@ -319,6 +319,116 @@ profileRouter.put('/change-password', authorize, async (req, res) => {
     }
 });
 
+profileRouter.get('/users', authorize, async (req, res) => {
+    try {
+        const { search = '', role } = req.query;
+
+        const page = req.query.page ? parseInt(req.query.page, 10) : 1;
+        const limit = req.query.limit ? parseInt(req.query.limit, 10) : 10;
+        const offset = (page - 1) * limit;
+
+        const whereClause = {};
+
+        if (role) {
+            switch (role) {
+                case 'regular':
+                case 'whosale':
+                    whereClause.role_type = role;
+                    break;
+                default:
+                    return res.status(400).json({ message: 'Заданой роли не существует' });
+            }
+        }
+
+        let profileMatchedUserIds = [];
+
+        if (search) {
+            const matchedProfiles = await profile.findAll({
+                where: {
+                    [Sequelize.Op.or]: [
+                        Sequelize.where(
+                            Sequelize.fn('LOWER', Sequelize.col('first_name')),
+                            { [Sequelize.Op.like]: `%${search.toLowerCase()}%` }
+                        ),
+                        Sequelize.where(
+                            Sequelize.fn('LOWER', Sequelize.col('last_name')),
+                            { [Sequelize.Op.like]: `%${search.toLowerCase()}%` }
+                        )
+                    ]
+                },
+                attributes: ['user_id']
+            });
+
+            profileMatchedUserIds = matchedProfiles.map(p => p.user_id);
+
+            whereClause[Sequelize.Op.or] = [
+                Sequelize.where(
+                    Sequelize.fn('LOWER', Sequelize.col('email')),
+                    { [Sequelize.Op.like]: `%${search.toLowerCase()}%` }
+                ),
+                Sequelize.where(
+                    Sequelize.fn('LOWER', Sequelize.col('user_id')),
+                    { [Sequelize.Op.like]: `%${search.toLowerCase()}%` }
+                ),
+                {
+                    user_id: { [Sequelize.Op.in]: profileMatchedUserIds }
+                }
+            ];
+        }
+
+        const { rows, count } = await user.findAndCountAll({
+            attributes: ['user_id', 'email', 'role_type'],
+            where: whereClause,
+            limit,
+            offset
+        });
+
+        const userIds = rows.map(u => u.user_id);
+
+        const profiles = await profile.findAll({
+            where: {
+                user_id: { [Sequelize.Op.in]: userIds }
+            },
+            attributes: ['user_id', 'first_name', 'last_name']
+        });
+
+        const profileMap = {};
+        profiles.forEach(p => {
+            profileMap[p.user_id] = p;
+        });
+
+        const users = rows.map(u => {
+            const profileData = profileMap[u.user_id];
+            const name = profileData
+                ? `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim()
+                : '';
+            return {
+                id: u.user_id,
+                email: u.email,
+                role: u.role_type,
+                name
+            };
+        });
+
+        const totalPages = Math.ceil(count / limit);
+
+        res.status(200).json({
+            data: users,
+            meta: {
+                totalItems: count,
+                currentPage: page,
+                totalPages: totalPages || 1,
+                pageSize: limit
+            }
+        });
+    } catch (error) {
+        console.error('Ошибка при получении списка пользователей:', error);
+        res.status(500).json({ message: 'Не удалось получить список пользователей', error: error.message });
+    }
+});
+
+
+
 
 module.exports = {
     profileRouter

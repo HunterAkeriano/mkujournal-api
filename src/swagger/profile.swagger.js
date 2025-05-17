@@ -387,3 +387,102 @@
  *                   type: string
  *                   example: "Error details..."
  */
+/**
+ * @swagger
+ * /profile/users:
+ *   get:
+ *     summary: Получение списка пользователей
+ *     description: Возвращает список всех пользователей с их email, ролью и ФИО (если есть профиль). Поддерживает пагинацию, фильтрацию по роли и поиск по email или user_id.
+ *     tags: [Profile]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Поиск по email или user_id
+ *       - in: query
+ *         name: role
+ *         schema:
+ *           type: string
+ *           enum: [whosale, regular]
+ *         description: Фильтрация по роли
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Номер страницы
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Количество пользователей на странице
+ *     responses:
+ *       200:
+ *         description: Список пользователей успешно получен
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   description: Список пользователей
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         description: Уникальный идентификатор пользователя (user_id)
+ *                         example: "abc123"
+ *                       email:
+ *                         type: string
+ *                         description: Email пользователя
+ *                         example: "user@example.com"
+ *                       role:
+ *                         type: string
+ *                         description: Роль пользователя
+ *                         example: "whosale"
+ *                       name:
+ *                         type: string
+ *                         description: Имя пользователя (из профиля)
+ *                         example: "Иван Иванов"
+ *                 meta:
+ *                   type: object
+ *                   properties:
+ *                     totalItems:
+ *                       type: integer
+ *                       example: 57
+ *                     currentPage:
+ *                       type: integer
+ *                       example: 2
+ *                     totalPages:
+ *                       type: integer
+ *                       example: 6
+ *       400:
+ *         description: Ошибка в переданных параметрах (например, несуществующая роль)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Заданой роли не существует"
+ *       500:
+ *         description: Внутренняя ошибка при получении списка пользователей
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Не удалось получить список пользователей"
+ *                 error:
+ *                   type: string
+ *                   example: "Database error details..."
+ */
