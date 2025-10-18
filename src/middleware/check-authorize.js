@@ -3,14 +3,14 @@ const db = require("../orm");
 const User = db.user
 
 const authorize = async (req, res, next) => {
-    const { authorization } = req.headers;
+    const { Authorization } = req.headers;
 
-    if (!authorization) {
+    if (!Authorization) {
         return res.status(401).json({ message: 'Access token required' });
     }
 
     try {
-        const decoded = jwt.verify(authorization, 'your-secret-key'); //todo: fix or env
+        const decoded = jwt.verify(Authorization, 'your-secret-key'); //todo: fix or env
 
         const user = await User.findOne({
             where: { user_id: decoded.userId }
