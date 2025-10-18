@@ -5,10 +5,8 @@
   "main": "./main.js",
   "type": "module",
   "scripts": {
-    "start": "node ./main.js --port=3000 --hostname=127.1.4.116",
-    "dev": "nodemon ./main.js",
-    "build": "build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "author": "Dmitriy Gulak",
   "license": "ISC",
