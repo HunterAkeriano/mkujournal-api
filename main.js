@@ -1,13 +1,9 @@
 import { Telegraf } from 'telegraf'
 
-// Токен твоего бота
 const bot = new Telegraf('6720826721:AAGca7w3fW-wKK9-yAOa4h2aaPaccQhAOcw')
-
-// ID канала (или группы)
 const targetChatId = '-1002206913679'
 const OWNER_ID = '7282627530'
 
-// === Массивы случайных фраз ===
 const randomPhrases = [
     'ты совсем охуел?',
     'может тебе еще ноги помыть?',
@@ -60,156 +56,70 @@ const toilet = [
     "я там банку Рево спрятал, которая выпала из пакета"
 ]
 
-// === Функция для извлечения ID сообщения из ссылки ===
 function extractMessageId(text) {
     const linkRegex = /(?:https?:\/\/)?t\.me\/c\/\d+\/(\d+)/
     const match = text.match(linkRegex)
     return match ? parseInt(match[1]) : null
 }
 
-// === Обработка всех сообщений ===
-bot.on('message', async (ctx) => {
-    console.log('=== НОВОЕ СООБЩЕНИЕ ===')
-    console.log('Тип чата:', ctx.chat.type)
-    console.log('ID отправителя:', ctx.from.id)
-    console.log('Тип сообщения:', Object.keys(ctx.message)[1])
-    console.log('=====================')
+// === ПОСТОЯННЫЙ “НАБИРАЕТ СООБЩЕНИЕ” ===
+async function keepTyping() {
+    while (true) {
+        try {
+            await bot.telegram.sendChatAction(targetChatId, 'typing')
+        } catch (err) {
+            console.error('Ошибка при отправке chat action:', err.message)
+        }
+        await new Promise(r => setTimeout(r, 4000)) // каждые 4 секунды
+    }
+}
+keepTyping()
 
+// === Обработка сообщений ===
+bot.on('message', async (ctx) => {
     const messageText = ctx.message.text ? ctx.message.text.toLowerCase() : ''
     const isOwner = ctx.from.id.toString() === OWNER_ID
     const isPrivateChat = ctx.chat.type === 'private'
 
-    // === Реакция на "тапки" ===
     if (messageText.includes('тапки') || messageText.includes('тапочки')) {
-        console.log('❌ Найдено ключевое слово (тапки). Отправляю случайную фразу.')
-        const randomPhrase = randomPhrases[Math.floor(Math.random() * randomPhrases.length)]
-        try {
-            await ctx.reply(randomPhrase)
-            console.log('✅ Случайная фраза успешно отправлена!')
-        } catch (error) {
-            console.error('❌ Ошибка при отправке случайной фразы:', error)
-        }
+        await ctx.reply(randomPhrases[Math.floor(Math.random() * randomPhrases.length)])
     }
 
-    // === Реакция на "Андрей" ===
     if (messageText.includes('андрей')) {
-        console.log('❌ Найдено ключевое слово (Андрей). Отправляю случайную фразу.')
-        const randomPhrase = randomPhrasesAndr[Math.floor(Math.random() * randomPhrasesAndr.length)]
-        try {
-            await ctx.reply(randomPhrase)
-            console.log('✅ Случайная фраза успешно отправлена!')
-        } catch (error) {
-            console.error('❌ Ошибка при отправке случайной фразы:', error)
-        }
+        await ctx.reply(randomPhrasesAndr[Math.floor(Math.random() * randomPhrasesAndr.length)])
     }
 
-    // === Реакция на "чай / кофе / рево" ===
-    if (
-        messageText.includes('чай') ||
-        messageText.includes('чая') ||
-        messageText.includes('кофе') ||
-        messageText.includes('рево')
-    ) {
-        console.log('❌ Найдено ключевое слово (чай/кофе/рево). Отправляю случайную фразу.')
-        const randomPhrase = teaRandom[Math.floor(Math.random() * teaRandom.length)]
-        try {
-            await ctx.reply(randomPhrase)
-            console.log('✅ Случайная фраза успешно отправлена!')
-        } catch (error) {
-            console.error('❌ Ошибка при отправке случайной фразы:', error)
-        }
+    if (messageText.includes('чай') || messageText.includes('чая') || messageText.includes('кофе') || messageText.includes('рево')) {
+        await ctx.reply(teaRandom[Math.floor(Math.random() * teaRandom.length)])
     }
 
-    // === Реакция на "бот / технологии / телеграмм" ===
-    if (
-        messageText.includes('бот') ||
-        messageText.includes('ботик') ||
-        messageText.includes('технолог') ||
-        messageText.includes('телеграм') ||
-        messageText.includes('айти') ||
-        messageText.includes('интернет')
-    ) {
-        console.log('❌ Найдено ключевое слово (бот/технологии/телеграмм). Отправляю случайную фразу.')
-        const randomPhrase = botRandom[Math.floor(Math.random() * botRandom.length)]
-        try {
-            await ctx.reply(randomPhrase)
-            console.log('✅ Случайная фраза успешно отправлена!')
-        } catch (error) {
-            console.error('❌ Ошибка при отправке случайной фразы:', error)
-        }
+    if (messageText.includes('бот') || messageText.includes('ботик') || messageText.includes('технолог') || messageText.includes('телеграм') || messageText.includes('айти') || messageText.includes('интернет')) {
+        await ctx.reply(botRandom[Math.floor(Math.random() * botRandom.length)])
     }
 
-    // === Реакция на "туалет / сортир / ванна / параша" ===
-    if (
-        messageText.includes('туалет') ||
-        messageText.includes('сортир') ||
-        messageText.includes('унитаз') ||
-        messageText.includes('ванна') ||
-        messageText.includes('параша') ||
-        messageText.includes('срать') ||
-        messageText.includes('поссать') ||
-        messageText.includes('говно')
-    ) {
-        console.log('❌ Найдено ключевое слово (туалет/сортир/ванна). Отправляю случайную фразу.')
-        const randomPhrase = toilet[Math.floor(Math.random() * toilet.length)]
-        try {
-            await ctx.reply(randomPhrase)
-            console.log('✅ Случайная фраза успешно отправлена!')
-        } catch (error) {
-            console.error('❌ Ошибка при отправке случайной фразы:', error)
-        }
+    if (messageText.includes('туалет') || messageText.includes('сортир') || messageText.includes('унитаз') || messageText.includes('ванна') || messageText.includes('параша') || messageText.includes('срать') || messageText.includes('поссать') || messageText.includes('говно')) {
+        await ctx.reply(toilet[Math.floor(Math.random() * toilet.length)])
     }
 
-    // === Отправка сообщений владельцем ===
     if (isPrivateChat && isOwner) {
-        console.log('✅ Сообщение от владельца в личке')
-
         const userMessageText = ctx.message.caption || ctx.message.text
         const messageId = userMessageText ? extractMessageId(userMessageText) : null
 
         if (messageId) {
-            console.log(`🔗 Найдена ссылка на сообщение ID: ${messageId}`)
             const replyText = userMessageText.replace(/(?:https?:\/\/)?t\.me\/c\/\d+\/\d+/g, '').trim()
-
             if (replyText) {
-                try {
-                    await ctx.telegram.sendMessage(targetChatId, replyText, {
-                        reply_to_message_id: messageId
-                    })
-                    await ctx.reply('✅ Ответ отправлен на сообщение!')
-                    console.log('✅ Ответ успешно отправлен!')
-                } catch (error) {
-                    console.error('❌ Ошибка при отправке ответа:', error)
-                    await ctx.reply('❌ Ошибка при отправке ответа!')
-                }
+                await ctx.telegram.sendMessage(targetChatId, replyText, { reply_to_message_id: messageId })
+                await ctx.reply('✅ Ответ отправлен на сообщение!')
             } else {
-                try {
-                    await ctx.telegram.copyMessage(targetChatId, ctx.chat.id, ctx.message.message_id, {
-                        reply_to_message_id: messageId
-                    })
-                    await ctx.reply('✅ Медиафайл отправлен в канал как ответ!')
-                    console.log('✅ Медиафайл успешно отправлен!')
-                } catch (error) {
-                    console.error('❌ Ошибка при пересылке медиа:', error)
-                    await ctx.reply('❌ Ошибка при пересылке медиа!')
-                }
+                await ctx.telegram.copyMessage(targetChatId, ctx.chat.id, ctx.message.message_id, { reply_to_message_id: messageId })
+                await ctx.reply('✅ Медиафайл отправлен в канал как ответ!')
             }
         } else {
-            console.log('📝 Обычное сообщение без ссылки')
-            try {
-                await ctx.telegram.copyMessage(targetChatId, ctx.chat.id, ctx.message.message_id)
-                await ctx.reply('✅ Сообщение отправлено в канал!')
-                console.log('✅ Сообщение успешно отправлено!')
-            } catch (error) {
-                console.error('❌ Ошибка:', error)
-                await ctx.reply('❌ Ошибка при отправке!')
-            }
+            await ctx.telegram.copyMessage(targetChatId, ctx.chat.id, ctx.message.message_id)
+            await ctx.reply('✅ Сообщение отправлено в канал!')
         }
-    } else if (!isPrivateChat && !messageText.includes('тапки') && !messageText.includes('тапочки')) {
-        console.log('❌ Не от владельца или не в личке, игнорирую')
     }
 })
 
 bot.launch()
-
-console.log('Бот запущен!')
+console.log('Бот запущен и постоянно “набирает сообщение”!')
