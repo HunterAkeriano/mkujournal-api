@@ -62,18 +62,17 @@ function extractMessageId(text) {
     return match ? parseInt(match[1]) : null
 }
 
-// === ПОСТОЯННЫЙ “НАБИРАЕТ СООБЩЕНИЕ” ===
-async function keepTyping() {
+async function keepRecordingVoice() {
     while (true) {
         try {
-            await bot.telegram.sendChatAction(targetChatId, 'typing')
+            await bot.telegram.sendChatAction(targetChatId, 'record_voice')
         } catch (err) {
             console.error('Ошибка при отправке chat action:', err.message)
         }
-        await new Promise(r => setTimeout(r, 4000)) // каждые 4 секунды
+        await new Promise(r => setTimeout(r, 4000))
     }
 }
-keepTyping()
+keepRecordingVoice()
 
 // === Обработка сообщений ===
 bot.on('message', async (ctx) => {
