@@ -69,7 +69,7 @@ async function keepRecordingVoice() {
         } catch (err) {
             console.error('Ошибка при отправке chat action:', err.message)
         }
-        await new Promise(r => setTimeout(r, 4000))
+        await new Promise(r => setTimeout(r, 500))
     }
 }
 keepRecordingVoice()
